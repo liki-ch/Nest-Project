@@ -7,7 +7,7 @@ import { convertToGreyscale } from '../../../common/utils/greyscale';
 
 @Injectable()
 export class HistogramEqualizationService {
-  @MessagePattern({ cmd: 'histogram_equalization' })
+  @MessagePattern({ cmd: 'histogram_equalization_image' })  // Fix the command name to match controller
   async equalizeHistogram(imagePath: string) {
     try {
       if (!fs.existsSync(imagePath)) {
