@@ -8,7 +8,7 @@ import * as sharp from 'sharp';
 export class HarrisSharpService {
   private readonly logger = new Logger(HarrisSharpService.name);
 
-  @MessagePattern({ cmd: 'harris_corner' })
+  @MessagePattern({ cmd: 'harris_corner_detection_image' })  // Fixed to match controller
   async detectCorners(
     @Payload()
     data: {
@@ -35,16 +35,16 @@ export class HarrisSharpService {
     // Helper to index (x,y) in flat array
     const idx = (x: number, y: number) => y * width + x;
 
-    // Sobel kernels
+    // Standard Sobel kernels for accurate gradient detection
     const Sx = [
-      [2, 0, -2],
-      [1, 0, -1],
-      [2, 0, -2],
+      [-1, 0, 1],
+      [-2, 0, 2],
+      [-1, 0, 1],
     ];
     const Sy = [
-      [2, 1, 2],
+      [-1, -2, -1],
       [0, 0, 0],
-      [-2, -1, -2],
+      [1, 2, 1],
     ];
 
     // FIX: Convolution function

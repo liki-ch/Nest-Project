@@ -35,8 +35,8 @@ export class CannyEdgeDetectionService {
       // Non-Max Suppression
       const thinEdges = nonMaxSuppression(magnitude, direction, width!, height!);
 
-      // Double Threshold
-      const { strongEdges, weakEdges } = doubleThreshold(thinEdges, width!, height!, 5, 25);
+      // Better threshold values for cleaner edge detection
+      const { strongEdges, weakEdges } = doubleThreshold(thinEdges, width!, height!, 15, 30);
 
       // Apply hysteresis (missing step)
       const edges = hysteresis(strongEdges, weakEdges, width!, height!);

@@ -6,6 +6,7 @@ import * as path from 'path';
 
 @Injectable()
 export class EmbossService {
+  // Enhanced emboss kernel based on Wikipedia article
   private readonly customKernel = [
     [-2, -1, 0],
     [-1, 1, 1],
