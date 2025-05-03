@@ -30,6 +30,12 @@ export class SharpenService {
 
           for (let ky = -offset; ky <= offset; ky++) {
             for (let kx = -offset; kx <= offset; kx++) {
+              // FIX: Added missing kernel application code
+              const px = Math.min(Math.max(x + kx, 0), width - 1);
+              const py = Math.min(Math.max(y + ky, 0), height - 1);
+              const sourceIdx = (py * width + px) * channels + c;
+              const kernelVal = this.strongKernel[ky + offset][kx + offset];
+              sum += imageData[sourceIdx] * kernelVal;
             }
           }
 

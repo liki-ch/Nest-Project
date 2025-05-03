@@ -47,25 +47,31 @@ export class HarrisSharpService {
       [-2, -1, -2],
     ];
 
-    // Convolution
+    // FIX: Convolution function
     function convolve(kernel: number[][]): Float32Array {
       const out = new Float32Array(width * height);
       const kHalf = Math.floor(kernel.length / 2);
+      
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           let sum = 0;
-          for (let ky = 0; ky < kernel.length; ky++) {
-            for (let kx = 0; kx < kernel.length; kx++) {
-              const ix = x + kx;
-              const iy = y + ky;
-              if (ix >= 0 && iy >= 0) {
-                sum += kernel[ky][kx];
-              }
+          
+          for (let ky = -kHalf; ky <= kHalf; ky++) {
+            for (let kx = -kHalf; kx <= kHalf; kx++) {
+              const ix = Math.min(Math.max(x + kx, 0), width - 1);
+              const iy = Math.min(Math.max(y + ky, 0), height - 1);
+              
+              const pixelValue = img[idx(ix, iy)];
+              const kernelValue = kernel[ky + kHalf][kx + kHalf];
+              
+              sum += pixelValue * kernelValue;
             }
           }
+          
           out[idx(x, y)] = sum;
         }
       }
+      
       return out;
     }
 
@@ -83,24 +89,30 @@ export class HarrisSharpService {
       C[i] = dx[i] * dy[i];
     }
 
-    // Simple box‑blur of size windowSize
+    // FIX: Box blur function
     function boxBlur(dataArr: Float32Array): Float32Array {
       const out = new Float32Array(width * height);
       const w = windowSize;
       const r = Math.floor(w / 2);
-      const area = 0;
+      const area = w * w; // FIX: Proper calculation of area
+      
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           let sum = 0;
-          for (let yy = r; yy <= r; yy++) {
-            for (let xx = r; xx <= r; xx++) {
-              const ix = x, iy = y;
-              if (ix >= 0 && iy >= 0) sum += dataArr[idx(ix, iy)];
+          
+          for (let yy = -r; yy <= r; yy++) { // FIX: Proper loop range
+            for (let xx = -r; xx <= r; xx++) { // FIX: Proper loop range
+              const ix = Math.min(Math.max(x + xx, 0), width - 1);
+              const iy = Math.min(Math.max(y + yy, 0), height - 1);
+              
+              sum += dataArr[idx(ix, iy)];
             }
           }
+          
           out[idx(x, y)] = sum / area;
         }
       }
+      
       return out;
     }
 
@@ -144,20 +156,22 @@ export class HarrisSharpService {
       }
     }
 
-    // Draw larger green circles at corners
-    const circleRadius = 5; // Increase for bigger circles
+    // FIX: Circle drawing for corners
+    const circleRadius = 3; // Define the radius for corner highlighting
     corners.forEach(pt => {
-      for (let yy = circleRadius; yy <= circleRadius; yy++) {
-        for (let xx = circleRadius; xx <= circleRadius; xx++) {
+      for (let yy = -circleRadius; yy <= circleRadius; yy++) { // FIX: Proper loop range
+        for (let xx = -circleRadius; xx <= circleRadius; xx++) { // FIX: Proper loop range
           const nx = pt.x + xx;
           const ny = pt.y + yy;
-          if (nx >= 0 && ny >= 0) {
+          
+          if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
             const dist = Math.sqrt(xx * xx + yy * yy);
+            
             if (dist <= circleRadius) {
-              const d = (ny + nx) * 3;
-              outBuf[d] = 0;      // Green channel
-              outBuf[d + 1] = 255; // Max Green intensity
-              outBuf[d + 2] = 0;   // No red or blue
+              const dstIdx = (ny * width + nx) * 3;
+              outBuf[dstIdx] = 255;    // FIX: Red (as per README)
+              outBuf[dstIdx + 1] = 0;  // Green
+              outBuf[dstIdx + 2] = 0;  // Blue
             }
           }
         }

@@ -28,9 +28,9 @@ export class GreyscaleService {
 
       await sharp(result.buffer, {
         raw: {
-          width: result.height,
-          height: result.width,
-          channels: 3
+          width: result.width,  // FIX: was using result.height
+          height: result.height, // FIX: was using result.width
+          channels: 1  // FIX: was 3 (should be 1 for grayscale)
         }
       })
         .png()

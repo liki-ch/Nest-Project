@@ -148,6 +148,7 @@ export class FloodFillService {
       tolerance?: number;
     },
   ) {
-
+    // FIX: Call the main floodFill method
+    return this.floodFill(data);
   }
 }

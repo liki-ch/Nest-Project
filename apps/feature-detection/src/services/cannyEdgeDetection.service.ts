@@ -26,8 +26,11 @@ export class CannyEdgeDetectionService {
       // Convert to greyscale
       const { buffer: gray, width, height } = await convertToGreyscale(imagePath);
 
+      // Apply gaussian blur (missing step)
+      const blurred = applyGaussianBlur(gray, width!, height!);
+
       // Calculate gradients
-      const { magnitude, direction } = computeSobelGradients(gray, width!, height!);
+      const { magnitude, direction } = computeSobelGradients(blurred, width!, height!);
 
       // Non-Max Suppression
       const thinEdges = nonMaxSuppression(magnitude, direction, width!, height!);
@@ -35,8 +38,11 @@ export class CannyEdgeDetectionService {
       // Double Threshold
       const { strongEdges, weakEdges } = doubleThreshold(thinEdges, width!, height!, 5, 25);
 
+      // Apply hysteresis (missing step)
+      const edges = hysteresis(strongEdges, weakEdges, width!, height!);
+
       // Save the final output
-      await sharp(strongEdges, {
+      await sharp(edges, {
         raw: { width: width!, height: height!, channels: 1 },
       }).png().toFile(outputFilePath);
 
