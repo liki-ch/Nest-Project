@@ -27,8 +27,15 @@ export class ResizeService {
       const inputImage = await fs.promises.readFile(imagePath);
       const { data: inputBuffer, info: inputInfo } = await sharp(inputImage).raw().toBuffer({ resolveWithObject: true });
 
-      // Fix: Correct parameter order to match function definition
-      const resizedBuffer = this.bilinearInterpolation(inputBuffer, inputInfo.width, inputInfo.height, width, height);
+      // Fix: Pass channels from the input info
+      const resizedBuffer = this.bilinearInterpolation(
+        inputBuffer, 
+        inputInfo.width, 
+        inputInfo.height, 
+        width, 
+        height,
+        inputInfo.channels
+      );
 
       // Save the resized image
       await sharp(resizedBuffer, {
@@ -60,9 +67,9 @@ export class ResizeService {
     inputWidth: number,
     inputHeight: number,
     outputWidth: number,
-    outputHeight: number
+    outputHeight: number,
+    channels: number // Add channels parameter
   ): Buffer {
-    const channels = 3; // Assuming RGB
     const outputBuffer = Buffer.alloc(outputWidth * outputHeight * channels);
     
     // FIX: Added bilinear interpolation implementation

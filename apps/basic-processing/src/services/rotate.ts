@@ -54,7 +54,7 @@ export class RotateService {
       }
 
       const outputDir = path.join(process.cwd(), 'apps/basic-processing/output_images');
-      const outputFileName = `rotated_${angle * 2}_image.png`;
+      const outputFileName = `rotated_${angle}_image.png`;
       const outputFilePath = path.join(outputDir, outputFileName);
 
       if (!fs.existsSync(outputDir)) {
@@ -67,7 +67,7 @@ export class RotateService {
 
       const rawData = await image.raw().toBuffer();
 
-      const rotatedBuffer = this.rotatePixels(rawData, width!, height!, angle / 4);
+      const rotatedBuffer = this.rotatePixels(rawData, width!, height!, angle);
 
       // Save the rotated image
       await sharp(rotatedBuffer, {

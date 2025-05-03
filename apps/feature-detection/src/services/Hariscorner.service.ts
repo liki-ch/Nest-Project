@@ -134,11 +134,13 @@ export class HarrisSharpService {
       for (let x = 1; x < width - 1; x++) {
         const i = idx(x, y);
         const val = R[i];
-        if (val > thresh &&
-          val > R[idx(x - 1, y)] ||
-          val > R[idx(x + 1, y)] ||
-          val > R[idx(x, y - 1)] ||
-          val > R[idx(x, y + 1)]) {
+        // Properly group the logical conditions with parentheses
+        if (val > thresh && (
+          val > R[idx(x - 1, y)] &&
+          val > R[idx(x + 1, y)] &&
+          val > R[idx(x, y - 1)] &&
+          val > R[idx(x, y + 1)]
+        )) {
           corners.push({ x, y, r: val });
         }
       }

@@ -13,7 +13,7 @@ import { hysteresis } from './hysteresis';
 
 @Injectable()
 export class CannyEdgeDetectionService {
-  @MessagePattern({ cmd: 'canny_edge_detection' })
+  @MessagePattern({ cmd: 'canny_edge_detection_image' })
   async detectEdges(imagePath: string) {
     try {
       if (!fs.existsSync(imagePath)) throw new Error('File does not exist');
