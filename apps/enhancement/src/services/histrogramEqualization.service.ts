@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import * as sharp from 'sharp';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern } from '@nestjs/microservices';
 import * as fs from 'fs';
 import * as path from 'path';
 import { convertToGreyscale } from '../../../common/utils/greyscale';
 
 @Injectable()
 export class HistogramEqualizationService {
-  @MessagePattern({ cmd: 'histogram_equalization_image' })  // Fix the command name to match controller
+  @EventPattern({ cmd: 'histogram_equalization_image' })  // Changed from MessagePattern to EventPattern
   async equalizeHistogram(imagePath: string) {
     try {
       if (!fs.existsSync(imagePath)) {

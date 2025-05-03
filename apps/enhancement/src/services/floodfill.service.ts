@@ -8,7 +8,7 @@ import * as sharp from 'sharp';
 export class FloodFillService {
   private readonly logger = new Logger(FloodFillService.name);
 
-  @MessagePattern({ cmd: 'flood_fill' })
+  @MessagePattern({ cmd: 'flood_fill_image' })  // Changed from 'flood_fill' to 'flood_fill_image'
   async floodFill(
     @Payload()
     data: {
@@ -137,18 +137,7 @@ export class FloodFillService {
     }
   }
 
-  @MessagePattern({ cmd: 'flood_fill_image' })
-  async floodFillImage(
-    @Payload()
-    data: {
-      imagePath: string;
-      sr: number;
-      sc: number;
-      newColor: [number, number, number];
-      tolerance?: number;
-    },
-  ) {
-    // FIX: Call the main floodFill method
-    return this.floodFill(data);
-  }
+  // Remove or comment out this method since it's redundant now
+  // @MessagePattern({ cmd: 'flood_fill_image' })
+  // async floodFillImage(...) { ... }
 }

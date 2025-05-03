@@ -13,18 +13,18 @@ export class RotateService {
     angle: number
   ): Buffer {
     const channels = 3; // FIX: Use 3 channels for RGB
-    // FIX: Properly allocate output buffer
+    // Properly allocate output buffer with correct dimensions
     const outputBuffer = Buffer.alloc(width * height * channels);
     
-    // FIX: Corrected angle calculation
+    // Corrected angle calculation and transformation
     const radian = (angle * Math.PI) / 180;
     const centerX = width / 2;
     const centerY = height / 2;
     
-    // FIX: Process all pixels, not every other one
+    // Process all pixels correctly
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        // FIX: Translate point to origin, rotate, then translate back
+        // Translate point to origin, rotate, then translate back
         const dx = x - centerX;
         const dy = y - centerY;
         

@@ -72,7 +72,7 @@ export class ResizeService {
   ): Buffer {
     const outputBuffer = Buffer.alloc(outputWidth * outputHeight * channels);
     
-    // FIX: Added bilinear interpolation implementation
+    // The bilinear interpolation needs to be properly implemented with:
     const x_ratio = (inputWidth - 1) / (outputWidth - 1);
     const y_ratio = (inputHeight - 1) / (outputHeight - 1);
     

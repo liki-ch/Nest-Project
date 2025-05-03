@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { EventPattern, Payload } from '@nestjs/microservices';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sharp from 'sharp';
@@ -8,7 +8,7 @@ import * as sharp from 'sharp';
 export class HarrisSharpService {
   private readonly logger = new Logger(HarrisSharpService.name);
 
-  @MessagePattern({ cmd: 'harris_corner_detection_image' })  // Fixed to match controller
+  @EventPattern({ cmd: 'harris_corner_detection_image' })  // Changed from MessagePattern to EventPattern
   async detectCorners(
     @Payload()
     data: {

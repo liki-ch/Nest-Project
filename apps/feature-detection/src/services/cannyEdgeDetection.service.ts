@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as sharp from 'sharp';
 import * as fs from 'fs';
 import * as path from 'path';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern } from '@nestjs/microservices';
 import { convertToGreyscale } from '../../../common/utils/greyscale';
 import { applyGaussianBlur } from './gaussianBlur';
 import { computeSobelGradients } from './sobelGradients';
@@ -13,7 +13,7 @@ import { hysteresis } from './hysteresis';
 
 @Injectable()
 export class CannyEdgeDetectionService {
-  @MessagePattern({ cmd: 'canny_edge_detection_image' })
+  @EventPattern({ cmd: 'canny_edge_detection_image' })
   async detectEdges(imagePath: string) {
     try {
       if (!fs.existsSync(imagePath)) throw new Error('File does not exist');
