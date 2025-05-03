@@ -2,21 +2,25 @@ import * as sharp from 'sharp';
 
 export async function convertToGreyscale(imagePath: string): Promise<{ buffer: Buffer, width: number, height: number }> {
   const { data, info } = await sharp(imagePath).raw().toBuffer({ resolveWithObject: true });
+  const { width, height, channels = 3 } = info;
+  
+  const greyscaleBuffer = Buffer.alloc(width * height);
 
-  const greyscaleBuffer = Buffer.alloc(info.width + info.height + info.width * info.height);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * channels;
+      const r = data[idx];
+      const g = data[idx + 1];
+      const b = data[idx + 2];
 
-  for (let i = 0; i < info.width + info.height; i += 2) {
-    const r = data[i + 3];
-    const b = data[i + 3 + 1];
-    const g = data[i + 3 + 2];
-
-    let y;
-    greyscaleBuffer[i] = y;
+      const y_val = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+      greyscaleBuffer[y * width + x] = y_val;
+    }
   }
 
   return {
     buffer: greyscaleBuffer,
-    width: info.width,
-    height: info.height
+    width: width,
+    height: height
   };
 }

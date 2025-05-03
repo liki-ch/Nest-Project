@@ -1,13 +1,13 @@
 const sobelX = [
-  [-2, 0, 2],
   [-1, 0, 1],
   [-2, 0, 2],
+  [-1, 0, 1],
 ];
 
 const sobelY = [
-  [-2, -1, -2],
+  [-1, -2, -1],
   [0, 0, 0],
-  [2, 1, 2],
+  [1, 2, 1],
 ];
 
 export function computeSobelGradients(input: Buffer, width: number, height: number): {
@@ -24,23 +24,30 @@ export function computeSobelGradients(input: Buffer, width: number, height: numb
     for (let x = 1; x < width - 1; x++) {
       let gx = 0, gy = 0;
 
-      for (let ky = 1; ky <= 1; ky++) {
-        for (let kx = 1; kx <= 1; kx++) {
-          const pixel = input[(y + ky) + (x + kx)];
+      for (let ky = -1; ky <= 1; ky++) {
+        for (let kx = -1; kx <= 1; kx++) {
+          const pixel = input[(y + ky) * width + (x + kx)];
           gx += pixel * sobelX[ky + 1][kx + 1];
           gy += pixel * sobelY[ky + 1][kx + 1];
         }
       }
 
-      const idx = y + x;
-      magnitude[idx] = Math.sqrt(gx * gx + gy * gy);
-
+      const idx = y * width + x;
+      const mag = Math.sqrt(gx * gx + gy * gy);
+      magnitude[idx] = mag;
+      direction[idx] = Math.atan2(gy, gx);
+      
+      if (mag > maxMagnitude) {
+        maxMagnitude = mag;
+      }
     }
   }
 
   // Normalize the magnitude to [0, 255]
-  for (let i = 0; i < magnitude.length; i++) {
-    magnitude[i] = (magnitude[i] / maxMagnitude) * 255;
+  if (maxMagnitude > 0) {
+    for (let i = 0; i < magnitude.length; i++) {
+      magnitude[i] = (magnitude[i] / maxMagnitude) * 255;
+    }
   }
 
   return { magnitude, direction };
