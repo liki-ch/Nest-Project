@@ -27,7 +27,8 @@ export class ResizeService {
       const inputImage = await fs.promises.readFile(imagePath);
       const { data: inputBuffer, info: inputInfo } = await sharp(inputImage).raw().toBuffer({ resolveWithObject: true });
 
-      const resizedBuffer = this.bilinearInterpolation(inputBuffer, inputInfo.height,  inputInfo.width, height, width);
+      // Fix: Correct parameter order to match function definition
+      const resizedBuffer = this.bilinearInterpolation(inputBuffer, inputInfo.width, inputInfo.height, width, height);
 
       // Save the resized image
       await sharp(resizedBuffer, {
